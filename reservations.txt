@@ -1,1 +1,6 @@
 PNR1971|Aditya Sajwan|18|M|Dehradun|Mumbai|42
+PNR7272|Akshat|18|M|dehradun|california|48
+PNR7994|preeti|33|F|dehradun|delhi|2
+PNR1448|ad|1|a|d|ad|2005876976
+PNR2105|Encore Abj|25|M|Dehradun|Dehli|23
+PNR6944|Calm|25|F|Dehradun|Dehli|24

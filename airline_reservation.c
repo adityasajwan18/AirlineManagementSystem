@@ -34,29 +34,58 @@ int isSeatBooked(int seatNo) {
 void bookTicket() {
     FILE *fp = fopen(FILENAME, "a");
     struct Passenger p;
-    printf("Enter Name: ");
-    scanf(" %[^\n]", p.name);
-    printf("Enter Age: ");
-    scanf("%d", &p.age);
-    printf("Enter Gender (M/F): ");
-    scanf(" %c", &p.gender);
-    printf("Enter Source: ");
-    scanf(" %[^\n]", p.source);
-    printf("Enter Destination: ");
-    scanf(" %[^\n]", p.destination);
-    do {
-        printf("Enter Seat No (1-%d): ", MAX_SEATS);
-        scanf("%d", &p.seatNo);
-        if (isSeatBooked(p.seatNo)) {
-            printf("Seat Already Booked! Choose another.\n");
-        }
-    } while (isSeatBooked(p.seatNo));
-    strcpy(p.pnr, generatePNR());
-    fprintf(fp, "%s|%s|%d|%c|%s|%s|%d\n", p.pnr, p.name, p.age, p.gender, p.source, p.destination, p.seatNo);
-    fclose(fp);
+    int totalBooked = 0;
+    int availableSeats = 0;
 
-    printf("Ticket Booked Successfully!\nYour PNR: %s\n", p.pnr);
+    FILE *check = fopen(FILENAME, "r");
+    struct Passenger temp;
+    while (fscanf(check, "%[^|]|%[^|]|%d|%c|%[^|]|%[^|]|%d\n", temp.pnr, temp.name, &temp.age, &temp.gender, temp.source, temp.destination, &temp.seatNo) != EOF) {
+        totalBooked++;
+    }
+    fclose(check);
+
+    availableSeats = MAX_SEATS - totalBooked;
+    printf("Total Available Seats: %d\n", availableSeats);
+
+    int numPassengers;
+    printf("Enter number of tickets to book: ");
+    scanf("%d", &numPassengers);
+
+    if (numPassengers > availableSeats) {
+        printf("Only %d seats available! Cannot book %d tickets.\n", availableSeats, numPassengers);
+        fclose(fp);
+        return;
+    }
+
+    for (int i = 0; i < numPassengers; i++) {
+        printf("\n--- Booking Ticket for Passenger %d ---\n", i + 1);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", p.name);
+        printf("Enter Age: ");
+        scanf("%d", &p.age);
+        printf("Enter Gender (M/F): ");
+        scanf(" %c", &p.gender);
+        printf("Enter Source: ");
+        scanf(" %[^\n]", p.source);
+        printf("Enter Destination: ");
+        scanf(" %[^\n]", p.destination);
+
+        do {
+            printf("Enter Seat No (1-%d): ", MAX_SEATS);
+            scanf("%d", &p.seatNo);
+            if (isSeatBooked(p.seatNo)) {
+                printf("Seat Already Booked! Choose another.\n");
+            }
+        } while (isSeatBooked(p.seatNo));
+
+        strcpy(p.pnr, generatePNR());
+        fprintf(fp, "%s|%s|%d|%c|%s|%s|%d\n", p.pnr, p.name, p.age, p.gender, p.source, p.destination, p.seatNo);
+        printf("Ticket Booked Successfully for %s! Your PNR: %s\n", p.name, p.pnr);
+    }
+
+    fclose(fp);
 }
+
 void displayTicket() {
     FILE *fp = fopen(FILENAME, "r");
     struct Passenger p;
